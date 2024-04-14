@@ -59,7 +59,6 @@ public class Player_Movement : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        //rb.freezerotation = true;
 
         startYScale = transform.localScale.y;
     }
@@ -102,23 +101,24 @@ public class Player_Movement : MonoBehaviour
 
             moveSpeed = sprintSpeed;
         }
+        //Mode Walk
         else if (grounded)
         {
             state = MovementState.Walk;
 
             moveSpeed = walkSpeed;
         }
+        //Mode Airmovement (air)
         else
         {
             state = MovementState.air;
-
-
         }
 
     }
 
     private void MyInput()
     {
+        //get movement inputs
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
 
@@ -129,13 +129,17 @@ public class Player_Movement : MonoBehaviour
 
             Jump();
 
+            //allow continuos jumping
             Invoke(nameof(ResetJump), jumpCooldown);
         }
 
         //Crouch
         if (Input.GetKeyDown(crouchKey))
         {
+            //shrink Player
             transform.localScale = new Vector3(transform.localScale.x, crouchYScale, transform.localScale.z);
+            //shrinking leaves Player slightly in the air
+            //=> push player down
             rb.AddForce(Vector3.down * 5f, ForceMode.Impulse);
         }
         if (Input.GetKeyUp(crouchKey))
@@ -150,12 +154,16 @@ public class Player_Movement : MonoBehaviour
         //movement calculations
         moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
 
+        //If Player is on slope
         if (OnSlope() && !exitingSlope)
         {
+            //apply force parallely to slope
             rb.AddForce(GetSlopeMovementDirection() * moveSpeed * 20f, ForceMode.Force);
 
+            //If Player moves up
             if (rb.velocity.y > 0)
             {
+                //Push Player down (no weird jumping)
                 rb.AddForce(Vector3.down * 80f, ForceMode.Force);
             }
         }
@@ -173,19 +181,26 @@ public class Player_Movement : MonoBehaviour
 
     private void SpeedControl()
     {
+        //If on slope and not jumping
         if (OnSlope() && !exitingSlope)
         {
+            //If current velocity is bigger than wanted
             if (rb.velocity.magnitude > moveSpeed)
             {
+                //Set to wanted
                 rb.velocity = rb.velocity.normalized * moveSpeed;
             }
         }
+        //If on ground or in air
         else
         {
+            //create Vector parellel to ground
             Vector3 flatVel = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
-
+            
+            //If speed greater than wanted
             if (flatVel.magnitude > moveSpeed)
             {
+                //Limit current velocity to wanted value
                 Vector3 limitedVel = flatVel.normalized * moveSpeed;
                 rb.velocity = new Vector3(limitedVel.x, rb.velocity.y, limitedVel.z);
             }
@@ -195,10 +210,12 @@ public class Player_Movement : MonoBehaviour
 
     private void Jump()
     {
+        //Slope is getting exited (necessary for slope movement)
         exitingSlope = true;
         //reset y velocity
         rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
+        //Apply Impulse Force Upwards (Jump)
         rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
     }
     private void ResetJump()
@@ -209,12 +226,14 @@ public class Player_Movement : MonoBehaviour
 
     private bool OnSlope()
     {
+        // If (Downwards-Raycast (half PlayerHeight + a bit more to sure hit)): Return angle of hit obj, oby angle and set bool to false
         if (Physics.Raycast(transform.position, Vector3.down, out hit, playerHeight * .5f + .3f))
         {
             float angle = Vector3.Angle(Vector3.up, hit.normal);
             return angle < maxSlopeAngle && angle != 0;
         }
-        return false;
+        else
+            return false;
     }
 
     private Vector3 GetSlopeMovementDirection()
