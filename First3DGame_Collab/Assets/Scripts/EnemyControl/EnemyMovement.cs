@@ -67,38 +67,6 @@ public class Enemy_Movement : MonoBehaviour
         MoveCharacter();
     }
 
-    //private void StateHandler()
-    //{
-    //    //Mode Crouching
-    //    if (Input.GetKey(crouchKey))
-    //    {
-    //        state = MovementState.Crouch;
-    //        moveSpeed = crouchSpeed;
-
-    //    }
-
-    //    //Mode Sprint
-    //    if (grounded && Input.GetKey(sprintKey))
-    //    {
-    //        state = MovementState.Sprint;
-
-    //        moveSpeed = sprintSpeed;
-    //    }
-    //    //Mode Walk
-    //    else if (grounded)
-    //    {
-    //        state = MovementState.Walk;
-
-    //        moveSpeed = walkSpeed;
-    //    }
-    //    //Mode Airmovement (air)
-    //    else
-    //    {
-    //        state = MovementState.air;
-    //    }
-
-    //}
-
     private void E_Input()
     {
         //get movement inputs
@@ -140,10 +108,6 @@ public class Enemy_Movement : MonoBehaviour
         //on ground
         if (grounded)
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
-
-        ////in air
-        //else if (!grounded)
-        //    rb.AddForce(moveDirection.normalized * moveSpeed * 10f * airMultiplier, ForceMode.Force);
 
         rb.useGravity = !OnSlope();
     }
