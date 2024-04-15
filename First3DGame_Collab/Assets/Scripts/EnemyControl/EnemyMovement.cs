@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class Enemy_Movement : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
     [Header("Movement")]
     private float moveSpeed;
     [SerializeField] private float walkSpeed;
-    [SerializeField] private float sprintSpeed;
+    //[SerializeField] private float sprintSpeed;
 
 
     [SerializeField] private float groundDrag;
@@ -23,9 +23,9 @@ public class Enemy_Movement : MonoBehaviour
 
     public Transform orientation;
 
-            //these variables should only be accessible from child objects
-            float horizontalInput;
-            float verticalInput;
+    public float horizontalInput;
+    public float verticalInput;
+    public float RotationInputX, RotationInputY, RotationInputZ;
 
     Vector3 moveDirection;
 
@@ -91,6 +91,8 @@ public class Enemy_Movement : MonoBehaviour
         //movement calculations
         moveDirection = (orientation.forward * verticalInput + orientation.right * horizontalInput).normalized;
 
+        transform.Rotate(RotationInputX, RotationInputY, RotationInputZ, Space.Self);
+
         //If on slope
         if (OnSlope())
         {
@@ -110,6 +112,7 @@ public class Enemy_Movement : MonoBehaviour
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
 
         rb.useGravity = !OnSlope();
+
     }
 
     private void SpeedControl()
