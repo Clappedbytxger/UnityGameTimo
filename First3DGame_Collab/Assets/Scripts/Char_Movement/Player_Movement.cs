@@ -226,10 +226,12 @@ public class Player_Movement : MonoBehaviour
 
     private bool OnSlope()
     {
-        // If (Downwards-Raycast (half PlayerHeight + a bit more to sure hit)): Return angle of hit obj, oby angle and set bool to false
+        // If (Downwards-Raycast (half PlayerHeight + a bit more to sure hit))
         if (Physics.Raycast(transform.position, Vector3.down, out hit, playerHeight * .5f + .3f))
         {
+            //get angle of obj.
             float angle = Vector3.Angle(Vector3.up, hit.normal);
+            //if angle of object not greater than allowed: return angle (else return false)
             return angle < maxSlopeAngle && angle != 0;
         }
         else
