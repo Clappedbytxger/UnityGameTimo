@@ -17,11 +17,6 @@ public class EnemyActions : MonoBehaviour
 
     Rigidbody rb;
 
-    void Start()
-    {
-        
-    }
-
     void Update()
     {
         if (AttackTrigger == true)

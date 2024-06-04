@@ -6,8 +6,23 @@ public class SelfDestruct : MonoBehaviour
 {
     [SerializeField] private float DestructionTime;
 
+    private bool SecondCollision;
+
     private void Start()
     {
-        Destroy(this.gameObject, .2f);
+        Destroy(this.gameObject, DestructionTime);
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        SecondCollision = true;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (SecondCollision == true)
+        {
+            Destroy(this.gameObject, .002f);
+        }
     }
 }
