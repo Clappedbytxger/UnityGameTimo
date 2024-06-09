@@ -24,12 +24,9 @@ public class FiringBehavior : MonoBehaviour
 
     Rigidbody rb;
 
-    //void Start()
-    //{
-    //    AttackClone = Attack;
-    //}
+    public List<GameObject> PossTargets = new List<GameObject>();
 
-    void Update()
+    private void Update()
     {
         if (AttackTrigger == true)
         {
@@ -67,12 +64,28 @@ public class FiringBehavior : MonoBehaviour
             AttackRb.AddForce(AttackDirection[0], AttackDirection[1], AttackDirection[2], ForceMode.Impulse);
 
             print("1");
-
-            //Invoke("Deletion", .2f);
         }
 
-    //private void Deletion()
-    //{
-    //    DestroyImmediate(GameObject.Find("simple_Attack_m(Clone)"), true);
-    //}
+    private void Targeting()
+    {
+        Invoke("TargetListing", 0);
+
+        float closest = 20; //add your max range here
+        GameObject closestObject = null;
+
+        for (int i = 0; i < PossTargets.Count; i++)  //list of gameObjects to search through
+        {
+            float dist = Vector3.Distance(PossTargets[i].transform.position, pos.transform.position);
+            if (dist < closest)
+            {
+                closest = dist;
+                closestObject = PossTargets[i];
+            }
+        }
+    }
+
+    private void TargetListing()
+    {
+        PossTargets = GameObject.FindGameObjectsWithTag("Friendly");
+    }
 }
